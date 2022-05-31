@@ -18,10 +18,23 @@ entry () {
   echo "Incomplete element/matrix"
   sleep 2
 
+  while true; do
+      read -p "Do you wish to stop&kill&remove all docker services ? " yn
+      case $yn in
+          [Yy]* ) stop_docker ; break;;
+          [Nn]* ) break;;
+          * ) echo "Please answer yes or no.";;
+      esac
+  done
+
   echo "Installing mandatory: "
+  apt-get update
+  apt-get upgrade -y
   apt-get install docker
   apt-get install sudo
   apt-get install openssl
+  apt-get update
+  apt-get upgrade -y
 
   echo "In the following this script will install all desired services you want:"
   echo
@@ -58,6 +71,12 @@ entry () {
 
   DESIRED_SERVICE="matrix"
   input_installer
+}
+
+stop_docker () {
+  docker kill $(docker ps -q)
+  docker rm $(docker ps -a -q)
+  docker rmi $(docker images -q)
 }
 
 container_up () {
