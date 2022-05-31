@@ -110,9 +110,9 @@ check_mandatory () {
     exit
   fi
   if [ ${DESIRED_SERVICE} = "Gitlab-AWS-S3-Backup" ]
-  then
+    then
       mv ./gitlab/docker-compose-no-s3.yaml ./gitlab/docker-compose.yaml
-  fi
+    fi
   echo "${DESIRED_SERVICE} will be skipped"
 }
 
@@ -120,58 +120,11 @@ input_installer () {
   while true; do
       read -p "Do you wish to install ${DESIRED_SERVICE} ? " yn
       case $yn in
-          [Yy]* ) install_desired_service ; break;;
+          [Yy]* ) install_${DESIRED_SERVICE} ; break;;
           [Nn]* ) check_mandatory ; break;;
           * ) echo "Please answer yes or no.";;
       esac
   done
-}
-
-install_desired_service () {
-  if [ ${DESIRED_SERVICE} = "traefik" ]
-  then
-    install_traefik    
-  fi
-  if [ ${DESIRED_SERVICE} = "teamspeak" ]
-  then
-    install_teamspeak   
-  fi
-  if [ ${DESIRED_SERVICE} = "seafile" ]
-  then
-    install_seafile
-  fi
-  if [ ${DESIRED_SERVICE} = "resilio-sync" ]
-  then
-    install_resilio-sync
-  fi
-  if [ ${DESIRED_SERVICE} = "portainer" ]
-  then
-    install_portainer
-  fi
-  if [ ${DESIRED_SERVICE} = "nextcloud" ]
-  then
-    install_nextcloud
-  fi
-  if [ ${DESIRED_SERVICE} = "jenkins" ]
-  then
-    install_jenkins
-  fi
-  if [ ${DESIRED_SERVICE} = "homer" ]
-  then
-    install_homer
-  fi
-  if [ ${DESIRED_SERVICE} = "gitlab" ]
-  then
-    install_gitlab
-  fi
-  if [ ${DESIRED_SERVICE} = "blog" ]
-  then
-    install_blog
-  fi
-  if [ ${DESIRED_SERVICE} = "matrix" ]
-  then
-    install_matrix
-  fi
 }
 
 install_default () {
@@ -180,7 +133,6 @@ install_default () {
 }
 
 install_traefik () {
-  input_installer
   echo "Creating proxy network"
   docker network create proxy
 
