@@ -28,9 +28,11 @@ entry () {
   done
 
   echo "Installing mandatory: "
+  sleep 1
   apt-get update
   apt-get upgrade -y
   apt-get install docker
+  apt-get install docker-compose-plugin
   apt-get install sudo
   apt-get install openssl
   apt-get update
