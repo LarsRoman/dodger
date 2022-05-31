@@ -8,8 +8,10 @@ Set the following environment variables:
 
 ```env
 DOMAIN=
-SMTP_PASSWORD
+SMTP_PASSWORD=
 ```
+
+Rename docker-compose-no-s3 -> 
 
 And then run
 

@@ -4,7 +4,7 @@ services:
     image: jenkins/jenkins:lts
     container_name: jenkins
     volumes:
-      - /YOUR_SOURCE_FOLDER:/YOUR_SOURCE_FOLDER
+      - /{YOUR_SOURCE_FOLDER}:/{YOUR_SOURCE_FOLDER_2}
       - ./jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker

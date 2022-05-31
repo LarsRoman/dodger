@@ -1,3 +1,17 @@
+## SHOUTOUT TO <a href=https://github.com/stefanDeveloper>stefanDeveloper</a>
+
+### for an automatic installation
+
+```sh
+git clone https://github.com/LarsRoman/dodger.git
+```
+```sh
+chmod +x ./start.sh
+```
+```sh
+./start.sh
+```
+
 <h1 align="center">
   <br />
   Dodger

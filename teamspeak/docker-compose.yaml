@@ -1,0 +1,72 @@
+version: '3.3'
+services:
+  teamspeak:
+    image: teamspeak
+    container_name: teamspeak
+    restart: always
+    networks:
+      proxy:
+      internal:
+        aliases:
+          - teamspeak.docker.local
+    volumes:
+      - teamspeak:/var/ts3server
+    environment:
+      - TS3SERVER_LICENSE=accept
+      - TS3SERVER_QUERY_PROTOCOLS=ssh,raw
+      - TS3SERVER_DB_PLUGIN=ts3db_mariadb
+      - TS3SERVER_DB_SQLCREATEPATH=create_mariadb
+      - TS3SERVER_DB_HOST=teamspeakdb
+      - TS3SERVER_DB_USER=root
+      - TS3SERVER_DB_PASSWORD=${TS3SERVER_DB_PASS}
+      - TS3SERVER_DB_NAME=teamspeak
+      - TS3SERVER_DB_WAITUNTILREADY=30
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_web"
+      - "traefik.http.routers.teamspeak.rule=Host(`ts.redacted`)"
+      - "traefik.http.routers.teamspeak.entrypoints=websecure"
+      - "traefik.http.routers.teamspeak.tls.certresolver=mytlschallenge"
+      # UDP
+      - "traefik.udp.routers.teamspeak.entrypoints=teamspeak"
+      # Filetransfer
+      - "traefik.tcp.routers.teamspeak-filetransfer.entrypoints=teamspeak_filetransfer"
+      - "traefik.tcp.routers.teamspeak-filetransfer.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.teamspeak-filetransfer.service=teamspeak-filetransfer@docker"
+      # RAW Query
+      - "traefik.tcp.routers.teamspeak-serverquery-raw.entrypoints=teamspeak_serverquery_raw"
+      - "traefik.tcp.routers.teamspeak-serverquery-raw.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.teamspeak-serverquery-raw.service=teamspeak-serverquery-raw@docker"
+      # SSH Query
+      - "traefik.tcp.routers.teamspeak-serverquery-ssh.entrypoints=teamspeak_serverquery_ssh"
+      - "traefik.tcp.routers.teamspeak-serverquery-ssh.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.teamspeak-serverquery-ssh.service=teamspeak-serverquery-ssh@docker"
+      # Services
+      - "traefik.udp.services.teamspeak.loadbalancer.server.port=9987"
+      - "traefik.tcp.services.teamspeak-filetransfer.loadbalancer.server.port=30033"
+      - "traefik.tcp.services.teamspeak-serverquery-raw.loadBalancer.server.port=10011"
+      - "traefik.tcp.services.teamspeak-serverquery-ssh.loadBalancer.server.port=10022"
+    depends_on:
+      - teamspeakdb
+
+  teamspeakdb:
+    image: mariadb
+    container_name: teamspeakdb
+    restart: always
+    volumes:
+      - teamspeakdb:/var/lib/mysql
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - internal
+    environment:
+      - MYSQL_ROOT_PASSWORD=${TS3SERVER_DB_PASS}
+      - MYSQL_DATABASE=teamspeak
+
+networks:
+  internal:
+    external: false
+
+volumes:
+  teamspeak:
+  teamspeakdb:

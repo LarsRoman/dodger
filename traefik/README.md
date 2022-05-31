@@ -26,6 +26,7 @@ Set the following environment variables:
 ```env
 DOMAIN=
 DASHBOARD_PASSWORD=
+DASHBOARD_USER=
 ```
 
 For the password you can use [htpasswd](https://hostingcanada.org/htpasswd-generator/). And then run
