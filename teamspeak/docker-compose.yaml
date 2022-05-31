@@ -64,6 +64,8 @@ services:
       - MYSQL_DATABASE=teamspeak
 
 networks:
+  proxy:
+    external: true
   internal:
     external: false
 

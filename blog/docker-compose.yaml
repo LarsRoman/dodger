@@ -9,7 +9,7 @@ services:
     networks:
       - proxy
     environment:
-      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes: 
       - ./db:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
@@ -32,7 +32,7 @@ services:
       - ./wordpress:/var/www/html
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.me.rule=Host(`me.${DOMAIN}`)"
+      - "traefik.http.routers.me.rule=Host(`wp.${DOMAIN}`)"
       - "traefik.http.routers.me.entrypoints=websecure"
       - "traefik.http.routers.me.tls.certresolver=mytlschallenge"
     networks:

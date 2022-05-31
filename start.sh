@@ -15,8 +15,7 @@ entry () {
   echo "Following services are not able to be installed via this script: "
   echo "openvpn"
   echo "nextcloud-backups"
-  echo "Gitlab AWS Back-up"
-  echo "Wordpress"
+  echo "Incomplete element/matrix"
   sleep 2
 
   echo "Installing mandatory: "
@@ -52,6 +51,12 @@ entry () {
   input_installer
 
   DESIRED_SERVICE="gitlab"
+  input_installer
+
+  DESIRED_SERVICE="blog"
+  input_installer
+
+  DESIRED_SERVICE="matrix"
   input_installer
 }
 
@@ -221,6 +226,35 @@ install_Gitlab-AWS-S3-Backup () {
     edit_env_file "Please provide your secret access key: "
 
     mv ./gitlab/docker-compose-s3.yaml ./gitlab/docker-compose.yaml
+}
+
+install_blog () {
+    ENV_VAR="{MYSQL_ROOT_PASSWORD}"
+    edit_env_file "Please provide a secure root database password: "
+
+    ENV_VAR="{MYSQL_USER}"
+    edit_env_file "Please provide a database user: "
+
+    ENV_VAR="{MYSQL_PASSWORD}"
+    edit_env_file "Please provide a secure database password: "
+
+    install_default
+}
+
+install_matrix () {
+  sed -i "s/{DOMAIN_2}/${DOMAIN}/" "./${DESIRED_SERVICE}/element-config.json"
+  sed -i "s/{DOMAIN_2}/${DOMAIN}/" "./${DESIRED_SERVICE}/element-config.json"
+
+  ENV_VAR="{POSTGRES_PW}"
+  edit_env_file "Please provide a secure database password: "
+
+  docker run -it --rm \
+      -v "$( pwd; )/synapse:/data" \
+      -e SYNAPSE_SERVER_NAME=matrix."${DOMAIN}" \
+      -e SYNAPSE_REPORT_STATS=yes \
+      matrixdotorg/synapse:latest generate
+
+  install_default
 }
 
 entry

@@ -6,12 +6,26 @@ To run docker-compose up you have to adapt `.env`
 
 Set the following environment variables:
 
+### AWS - S3 Backup is not needed
+
 ```env
 DOMAIN=
 SMTP_PASSWORD=
 ```
 
-Rename docker-compose-no-s3 -> 
+Rename docker-compose-no-s3.yaml -> docker-compose.yaml
+
+### AWS - S3 Backup needed
+
+```env
+DOMAIN=
+SMTP_PASSWORD=
+AWS_REGION=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+```
+
+Rename docker-compose-s3.yaml -> docker-compose.yaml
 
 And then run
 
