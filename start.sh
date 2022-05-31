@@ -142,14 +142,13 @@ install_traefik () {
   echo "Providing rights to certificates resolvers"
   sudo chmod 600 -R ./traefik/letsencrypt
 
-  echo "Please provide the desired main domain. The service will run under traefik.YOUR_INPUT"
-  edit_env_file_domain
+  edit_env_file_domain "Please provide the desired main domain. The service will run under traefik.YOUR_INPUT: "
 
-  ENV_VAR="DASHBOARD_USER"
+  ENV_VAR="{DASHBOARD_USER}"
   echo "Please provide a username and password for the traefik panel. "
   edit_env_file "Username: "
 
-  ENV_VAR="DASHBOARD_PASSWORD"
+  ENV_VAR="{DASHBOARD_PASSWORD}"
   read -p  "Password: " new_val
   DASHBOARD_PASS=$(openssl passwd -crypt "${new_val}")
   sed -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/.env"
