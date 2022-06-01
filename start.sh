@@ -38,6 +38,9 @@ entry () {
   apt-get update
   apt-get upgrade -y
 
+  echo "Creating mandatory directory"
+  mkdir -p "/etc/traefik"
+
   echo "In the following this script will install all desired services you want:"
   echo
 
@@ -153,8 +156,7 @@ install_traefik () {
   echo "Please provide a username and password for the traefik panel. "
   read -p  "User: " new_val_user
   read -p  "Password: " new_val
-  DASHBOARD_PASS=$($(htpasswd -nb "${new_val_user}" "${new_val}") | sed -e s/\\$/\\$\\$/g)
-  sed -e s/\\$/\\$\\$/g -i "s/$ENV_VAR/$($(htpasswd -nb "${new_val_user}" "${new_val}") | sed -e s/\\$/\\$\\$/g)/" "./${DESIRED_SERVICE}/docker-compose.yaml"
+  htpasswd -c /etc/traefik/userfile -nb "${new_val_user}" "${new_val}" | sed -e s/\\$/\\$\\$/g
 
   install_default
 }
