@@ -60,9 +60,7 @@ services:
     networks:
       - internal
     environment:
-      # Unccoment for local usage
-      # - MYSQL_ROOT_PASSWORD=${TS3SERVER_DB_PASS}
-      - MYSQL_ROOT_PASSWORD={TS3SERVER_DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${TS3SERVER_DB_PASS}
       - MYSQL_DATABASE=teamspeak
 
 networks:

@@ -93,7 +93,7 @@ container_up () {
 
 edit_env_file () {
   read -p  "$1 " new_val
-  sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.env"
+  sed -i "s/$ENV_VAR/${new_val}/" "./${DESIRED_SERVICE}/.env"
 }
 
 edit_yaml_file () {
@@ -165,7 +165,7 @@ install_traefik () {
 
 install_teamspeak () {
   ENV_VAR="{TS3SERVER_DB_PASS}"
-  edit_yaml_file "Please provide a secure database password: "
+  edit_env_file "Please provide a secure database password: "
 
   container_up
 }
@@ -205,8 +205,9 @@ install_nextcloud () {
 }
 
 install_jenkins () {
-  sed -i "s/{YOUR_SOURCE_FOLDER}/$( pwd; )/" "./jenkins/docker-compose.yaml"
-  sed -i "s/{YOUR_SOURCE_FOLDER_2}/$( pwd; )/" "./jenkins/docker-compose.yaml"
+  CURRENT_DIR=$( pwd; )
+  sed -i "s/{YOUR_SOURCE_FOLDER}/$CURRENT_DIR/" "./jenkins/docker-compose.yaml"
+  sed -i "s/{YOUR_SOURCE_FOLDER_2}/$CURRENT_DIR/" "./jenkins/docker-compose.yaml"
 
   install_default
 }
@@ -268,7 +269,7 @@ install_blog () {
 }
 
 install_matrix () {
-  sed -i "s/{DOMAIN_2}/${DOMAIN}/" "./${DESIRED_SERVICE}/element-config.json"
+  sed -i "s/{DOMAIN}/${DOMAIN}/" "./${DESIRED_SERVICE}/element-config.json"
   sed -i "s/{DOMAIN_2}/${DOMAIN}/" "./${DESIRED_SERVICE}/element-config.json"
 
   ENV_VAR="{POSTGRES_PW}"
