@@ -7,7 +7,7 @@ TOP_DOMAIN=""
 INSTALLED_SERVICES="\n\n"
 
 entry () {
-  if [ "$( pwd; )" = "/tmp" ]
+  if [ "$(pwd)" = "/tmp" ]
   then
     echo "Please do run this script inside its directory "
     sleep 3
@@ -212,10 +212,7 @@ install_portainer () {
 
 install_nextcloud () {
   ENV_VAR="{POSTGRES_PW}"
-  read -p  "Please provide a secure database password: " new_val
-  sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.env"
-  ENV_VAR="{POSTGRES2_PW}"
-  sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.env"
+  edit_env_file "Please provide a secure database password: "
 
   ENV_VAR="{REDIS_PW}"
   edit_env_file "Please provide a secure redis password: "
@@ -229,7 +226,7 @@ install_nextcloud () {
 }
 
 install_jenkins () {
-  CURRENT_DIR="$( pwd; )"
+  CURRENT_DIR="$(pwd)"
   sed -i "s/{YOUR_SOURCE_FOLDER}/$CURRENT_DIR/" "./jenkins/docker-compose.yaml"
   sed -i "s/{YOUR_SOURCE_FOLDER_2}/$CURRENT_DIR/" "./jenkins/docker-compose.yaml"
 
@@ -241,9 +238,9 @@ install_homer () {
   install_default
 
   I_AM_TIRED_AND_THAT_IS_WHY_THIS_IS_DONE="DIRTY"
+  mv ./${DESIRED_SERVICE}/assets ./${DESIRED_SERVICE}/data
+  sudo chown -R 1000:1000 ${DESIRED_SERVICE}/
 
-  cp -r ./${DESIRED_SERVICE}/assets ./${DESIRED_SERVICE}/data
-  mv ./${DESIRED_SERVICE}/assets ./${DESIRED_SERVICE}/data/assets
   INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:${TOP_DOMAIN}\nSee Username and Password at traefik\n\n"
 }
 
@@ -307,7 +304,7 @@ install_matrix () {
   edit_env_file "Please provide a secure database password: "
 
   docker run -it --rm \
-      -v "$( pwd; )/synapse:/data" \
+      -v "$(pwd)/synapse:/data" \
       -e SYNAPSE_SERVER_NAME=matrix."${DOMAIN}" \
       -e SYNAPSE_REPORT_STATS=yes \
       matrixdotorg/synapse:latest generate

@@ -4,7 +4,7 @@ services:
     image: b4bz/homer
     container_name: homer
     volumes:
-      - ./data:/www/assets
+      - ./data:/www/assets:Z
       - /etc/traefik/userfile:/userfile:ro
     labels:
       - "traefik.enable=true"
@@ -14,9 +14,9 @@ services:
       - "traefik.http.services.homer.loadbalancer.server.port=8080"
       - "traefik.http.routers.homer.middlewares=homer-auth"
       - "traefik.http.middlewares.dashboardauth.basicauth.usersfile=/userfile"
+    user: 1000:1000
     environment:
-      - UID=1000
-      - GID=1000
+      - INIT_ASSETS=0
     restart: unless-stopped
     networks:
       - proxy
