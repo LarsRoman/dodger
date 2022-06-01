@@ -1,6 +1,13 @@
 ## SHOUTOUT TO <a href=https://github.com/stefanDeveloper>stefanDeveloper</a>
 For a manual setup read [ME](./docu/STEFAN.md)
 
+
+# IMPORTANT
+
+I am currently working on a better solution: But when entering any input the bash script will try to execute it.
+That means you should add anything manually or just use alphanumeric input or try to avoid `\`, `$`, `´`, etc 
+
+
 ## Overview
 
 This repository provides a Docker stack to easily set up your server with a simple start script
@@ -33,6 +40,8 @@ This table includes all services which are not working properly
 Before running one of the applications, it is advisable to follow the [Prerequisite](./rerequisite/README.md). This guideline helps you to set up your server with some very basic settings, like Fail2Ban.
 
 ## Getting Started
+
+During the script anything can be modified and installed via the script, whether you would like a full instalation of all services or just like to install traefik, portainer and gitlab :) Every service will be asked if you really would like to install it.
 
 ```sh
 git clone https://github.com/LarsRoman/dodger.git
