@@ -1,8 +1,10 @@
 #!/bin/bash
 
+PUFFER=""
 DESIRED_SERVICE=""
 ENV_VAR=""
 TOP_DOMAIN=""
+INSTALLED_SERVICES=""
 
 entry () {
   if [ "$( pwd; )" = "/tmp" ]
@@ -76,6 +78,8 @@ entry () {
 
   DESIRED_SERVICE="matrix"
   input_installer
+
+  echo -ne $INSTALLED_SERVICES
 }
 
 stop_docker () {
@@ -94,11 +98,13 @@ container_up () {
 edit_env_file () {
   read -p  "$1 " new_val
   sed -i "s/$ENV_VAR/${new_val}/" "./${DESIRED_SERVICE}/.env"
+  PUFFER=${new_val}
 }
 
 edit_yaml_file () {
   read -p  "$1 " new_val
   sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/docker-compose.yaml"
+  PUFFER=${new_val}
 }
 
 edit_env_file_domain () {
@@ -161,31 +167,47 @@ install_traefik () {
   htpasswd -b -c /etc/traefik/userfile "${new_val_user}" "${new_val}"
 
   install_default
+
+  INSTALLED_SERVICES="Service ${DESIRED_SERVICE}\nURL:${DESIRED_SERVICE}.${TOP_DOMAIN}\nUser: ${new_val_user}\nPassword: ${new_val}\n\n"
 }
 
 install_teamspeak () {
   ENV_VAR="{TS3SERVER_DB_PASS}"
   edit_env_file "Please provide a secure database password: "
 
-  container_up
+  install_default
+
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service Teamspeak\nURL:ts.${TOP_DOMAIN}\n\n"
 }
 
 install_seafile () {
   ENV_VAR="{SEAFILE_ADMIN_MAIL}"
   edit_env_file "Please provide your seafile admin mail: "
+  email=${PUFFER}
 
   ENV_VAR="{SEAFILE_ADMIN_PASSWORD}"
   edit_env_file "Please provide your seafile admin password: "
+  pass=${PUFFER}
 
   install_default
+
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:${DESIRED_SERVICE}.${TOP_DOMAIN}\nE-Mail: ${email}\nPassword: ${pass}\n\n"
 }
 
 install_resilio-sync () {
   install_default
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:resilio.${TOP_DOMAIN}\n\n"
 }
 
 install_portainer () {
   install_default
+  echo "In order to prevent any upcoming portainer needs to be restarted. This could take up to 20s"
+  sleep 5
+  docker restart portainer
+  sleep 1
+  echo "Portainer was restarted"
+
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:${DESIRED_SERVICE}.${TOP_DOMAIN}\nYOU MUST VISIT THE URL TO CREATE AN ADMIN USER\n\n"
 }
 
 install_nextcloud () {
@@ -200,33 +222,36 @@ install_nextcloud () {
 
   ENV_VAR="{NEXTCLOUD_PASS}"
   edit_env_file "Please provide a secure admin password: "
+  pass=${PUFFER}
 
   install_default
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:${DESIRED_SERVICE}.${TOP_DOMAIN}\nUser: admin\nPassword: ${pass}\n\n"
 }
 
 install_jenkins () {
-  CURRENT_DIR=$( pwd; )
+  CURRENT_DIR="$( pwd; )"
   sed -i "s/{YOUR_SOURCE_FOLDER}/$CURRENT_DIR/" "./jenkins/docker-compose.yaml"
   sed -i "s/{YOUR_SOURCE_FOLDER_2}/$CURRENT_DIR/" "./jenkins/docker-compose.yaml"
 
   install_default
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:${DESIRED_SERVICE}.${TOP_DOMAIN}\nYOU MUST VISIT THE URL TO FINISH INSTALLATION\n\n"
 }
 
 install_homer () {
-    ENV_VAR="{DASHBOARD_PASSWORD}"
-    read -p  "Please provide a dashboard password: " new_val
-    DASHBOARD_PASS=$(openssl passwd -crypt "${new_val}")
-    sed -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/.env"
+  install_default
 
-    install_default
+  I_AM_TIRED_AND_THAT_IS_WHY_THIS_IS_DONE="DIRTY"
 
-    I_AM_TIRED_AND_THAT_IS_WHY_THIS_IS_DONE="DIRTY"
-
-    cp -r ./${DESIRED_SERVICE}/assets ./${DESIRED_SERVICE}/data
-    mv ./${DESIRED_SERVICE}/assets ./${DESIRED_SERVICE}/data/assets
+  cp -r ./${DESIRED_SERVICE}/assets ./${DESIRED_SERVICE}/data
+  mv ./${DESIRED_SERVICE}/assets ./${DESIRED_SERVICE}/data/assets
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:${TOP_DOMAIN}\nSee Username and Password at traefik\n\n"
 }
 
 install_gitlab () {
+  ENV_VAR="{ROOT_PASSWORD}"
+  edit_env_file "Please an initial alphanumeric root password: "
+  pass=${PUFFER}
+
   ENV_VAR="{SMTP_PASSWORD}"
   edit_env_file "Please provide a secure SMTP password: "
 
@@ -236,36 +261,39 @@ install_gitlab () {
 
 
   install_default
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:git.${TOP_DOMAIN}\nUser: root\nPassword: ${pass}\n\n"
+
   echo "IN ORDER TO CREATE A GITLAB RUNNER, FOLLOW THE REDME INSTRUCTIONS IN ./gitlab/"
   sleep 2
 }
 
 install_Gitlab-AWS-S3-Backup () {
-    DESIRED_SERVICE="gitlab"
+  DESIRED_SERVICE="gitlab"
 
-    ENV_VAR="{AWS_REGION}"
-    edit_env_file "Please provide your aws-region (e.g. eu-central-1): "
+  ENV_VAR="{AWS_REGION}"
+  edit_env_file "Please provide your aws-region (e.g. eu-central-1): "
 
-    ENV_VAR="{AWS_ACCESS_KEY_ID}"
-    edit_env_file "Please provide your secret access key ID (starting with AKIA...): "
+  ENV_VAR="{AWS_ACCESS_KEY_ID}"
+  edit_env_file "Please provide your secret access key ID (starting with AKIA...): "
 
-    ENV_VAR="{AWS_SECRET_ACCESS_KEY}"
-    edit_env_file "Please provide your secret access key: "
+  ENV_VAR="{AWS_SECRET_ACCESS_KEY}"
+  edit_env_file "Please provide your secret access key: "
 
-    mv ./gitlab/docker-compose-s3.yaml ./gitlab/docker-compose.yaml
+  mv ./gitlab/docker-compose-s3.yaml ./gitlab/docker-compose.yaml
 }
 
 install_blog () {
-    ENV_VAR="{MYSQL_ROOT_PASSWORD}"
-    edit_env_file "Please provide a secure root database password: "
+  ENV_VAR="{MYSQL_ROOT_PASSWORD}"
+  edit_env_file "Please provide a secure root database password: "
 
-    ENV_VAR="{MYSQL_USER}"
-    edit_env_file "Please provide a database user: "
+  ENV_VAR="{MYSQL_USER}"
+  edit_env_file "Please provide a database user: "
 
-    ENV_VAR="{MYSQL_PASSWORD}"
-    edit_env_file "Please provide a secure database password: "
+  ENV_VAR="{MYSQL_PASSWORD}"
+  edit_env_file "Please provide a secure database password: "
 
-    install_default
+  install_default
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service Wordpress\nURL:wp.${TOP_DOMAIN}\nYOU MUST VISIT THE URL TO FINISH INSTALLATION\n\n"
 }
 
 install_matrix () {
@@ -282,6 +310,7 @@ install_matrix () {
       matrixdotorg/synapse:latest generate
 
   install_default
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:matrix.${TOP_DOMAIN}\nI AM SORRY IF YOU RLY TRIED IT, BUT IT IS CURRENTLY BROKEN. But feel free to contribute and fix it \n\n"
 }
 
 entry

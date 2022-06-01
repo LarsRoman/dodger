@@ -24,7 +24,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_web"
-      - "traefik.http.routers.teamspeak.rule=Host(`ts.redacted`)"
+      - "traefik.http.routers.teamspeak.rule=Host(`ts.${DOMAIN}`)"
       - "traefik.http.routers.teamspeak.entrypoints=websecure"
       - "traefik.http.routers.teamspeak.tls.certresolver=mytlschallenge"
       # UDP
