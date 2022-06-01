@@ -85,18 +85,20 @@ stop_docker () {
 }
 
 container_up () {
-    docker-compose -f ./${DESIRED_SERVICE}/docker-compose.yaml up -d
-    echo "Service ${DESIRED_SERVICE} was started in the background"
+  cd ${DESIRED_SERVICE}
+  docker-compose -f docker-compose.yaml up -d
+  echo "Service ${DESIRED_SERVICE} was started in the background"
+  cd ..
 }
 
 edit_env_file () {
-    read -p  "$1 " new_val
-    sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.env"
+  read -p  "$1 " new_val
+  sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.env"
 }
 
 edit_yaml_file () {
-    read -p  "$1 " new_val
-    sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/docker-compose.yaml"
+  read -p  "$1 " new_val
+  sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/docker-compose.yaml"
 }
 
 edit_env_file_domain () {
@@ -156,7 +158,7 @@ install_traefik () {
   echo "Please provide a username and password for the traefik panel. "
   read -p  "User: " new_val_user
   read -p  "Password: " new_val
-  htpasswd -c /etc/traefik/userfile -nb "${new_val_user}" "${new_val}" | sed -e s/\\$/\\$\\$/g
+  htpasswd -b /etc/traefik/userfile "${new_val_user}" "${new_val}"
 
   install_default
 }
