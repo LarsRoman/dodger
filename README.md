@@ -1,6 +1,13 @@
 ## SHOUTOUT TO <a href=https://github.com/stefanDeveloper>stefanDeveloper</a>
 For a manual setup read [ME](./docu/STEFAN.md)
 
+
+#IMPORTANT
+
+I am currently working on a better solution: But when entering any input the bash script will try to execute it.
+Thet means you should add anything manually or just use alphanumeric input
+
+
 ## Overview
 
 This repository provides a Docker stack to easily set up your server with a simple start script
