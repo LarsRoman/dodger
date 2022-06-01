@@ -158,7 +158,7 @@ install_traefik () {
   echo "Please provide a username and password for the traefik panel. "
   read -p  "User: " new_val_user
   read -p  "Password: " new_val
-  htpasswd -b /etc/traefik/userfile "${new_val_user}" "${new_val}"
+  htpasswd -b -c /etc/traefik/userfile "${new_val_user}" "${new_val}"
 
   install_default
 }
