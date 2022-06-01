@@ -93,7 +93,7 @@ edit_env_file () {
 
 edit_yaml_file () {
     read -p  "$1 " new_val
-    sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.docker-compose.yaml"
+    sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/docker-compose.yaml"
 }
 
 edit_env_file_domain () {
