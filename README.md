@@ -2,7 +2,7 @@
 For a manual setup read [ME](./docu/STEFAN.md)
 
 
-#IMPORTANT
+# IMPORTANT
 
 I am currently working on a better solution: But when entering any input the bash script will try to execute it.
 Thet means you should add anything manually or just use alphanumeric input
