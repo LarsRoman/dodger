@@ -98,7 +98,7 @@ edit_yaml_file () {
 
 edit_env_file_domain () {
   ENV_VAR="{DOMAIN}"
-  read -p  " " new_val
+  read -p  "$1 " new_val
   sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.env"
   TOP_DOMAIN=$new_val
 }
@@ -150,8 +150,8 @@ install_traefik () {
   edit_env_file_domain "Please provide the desired main domain. The service will run under traefik.YOUR_INPUT: "
 
   ENV_VAR="{DASHBOARD_USER}"
-  edit_yaml_file "Please provide a username and password for the traefik panel. "
-  edit_env_file "Username: "
+  echo "Please provide a username and password for the traefik panel. "
+  edit_yaml_file "Username: "
 
   ENV_VAR="{DASHBOARD_PASSWORD}"
   read -p  "Password: " new_val
