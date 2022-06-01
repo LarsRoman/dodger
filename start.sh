@@ -154,7 +154,7 @@ install_traefik () {
   read -p  "User: " new_val_user
   read -p  "Password: " new_val
   DASHBOARD_PASS=$($(htpasswd -nb "${new_val_user}" "${new_val}") | sed -e s/\\$/\\$\\$/g)
-  sed -e s/\\$/\\$\\$/g -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/docker-compose.yaml"
+  sed -e s/\\$/\\$\\$/g -i "s/$ENV_VAR/$($(htpasswd -nb "${new_val_user}" "${new_val}") | sed -e s/\\$/\\$\\$/g)/" "./${DESIRED_SERVICE}/docker-compose.yaml"
 
   install_default
 }
