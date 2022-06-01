@@ -34,7 +34,7 @@ entry () {
   apt-get install docker
   apt-get install docker-compose-plugin
   apt-get install sudo
-  apt-get install openssl
+  apt-get install htpasswd
   apt-get update
   apt-get upgrade -y
 
@@ -149,14 +149,12 @@ install_traefik () {
 
   edit_env_file_domain "Please provide the desired main domain. The service will run under traefik.YOUR_INPUT: "
 
-  ENV_VAR="{DASHBOARD_USER}"
+  ENV_VAR="{DASHBOARD_USER_PASS}"
   echo "Please provide a username and password for the traefik panel. "
-  edit_yaml_file "Username: "
-
-  ENV_VAR="{DASHBOARD_PASSWORD}"
+  read -p  "User: " new_val_user
   read -p  "Password: " new_val
-  DASHBOARD_PASS=$(openssl passwd -crypt "${new_val}")
-  sed -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/docker-compose.yaml"
+  DASHBOARD_PASS=$($(htpasswd -nb "${new_val_user}" "${new_val}") | sed -e s/\\$/\\$\\$/g)
+  sed -e s/\\$/\\$\\$/g -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/docker-compose.yaml"
 
   install_default
 }

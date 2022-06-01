@@ -44,7 +44,7 @@ services:
       - "traefik.http.routers.traefik.tls.certresolver=mytlschallenge"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.middlewares=dashboardauth"
-      - "traefik.http.middlewares.dashboardauth.basicauth.users=${DASHBOARD_USER}:{SHA}${DASHBOARD_PASSWORD}"
+      - "traefik.http.middlewares.dashboardauth.basicauth.users=${DASHBOARD_USER_PASS}"
         # Global redirection: http to https
       - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:(www.)?.+}`)"
       - "traefik.http.routers.http-catchall.entrypoints=web"
