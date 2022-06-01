@@ -29,6 +29,7 @@ services:
         gitlab_rails['gitlab_shell_ssh_port'] = 22
         gitlab_rails['manage_backup_path'] = true
         gitlab_rails['backup_path'] = "/var/opt/gitlab/backups"
+        gitlab_rails['backup_upload_remote_directory'] = '${AWS_UPLOAD_REMOTE_DIR}'
         gitlab_rails['backup_upload_connection'] = {
            'provider' => 'AWS',
            'region' => '${AWS_REGION}',

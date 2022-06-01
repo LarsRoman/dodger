@@ -4,7 +4,7 @@ PUFFER=""
 DESIRED_SERVICE=""
 ENV_VAR=""
 TOP_DOMAIN=""
-INSTALLED_SERVICES=""
+INSTALLED_SERVICES="\n\n"
 
 entry () {
   if [ "$( pwd; )" = "/tmp" ]
@@ -168,7 +168,7 @@ install_traefik () {
 
   install_default
 
-  INSTALLED_SERVICES="Service ${DESIRED_SERVICE}\nURL:${DESIRED_SERVICE}.${TOP_DOMAIN}\nUser: ${new_val_user}\nPassword: ${new_val}\n\n"
+  INSTALLED_SERVICES="${INSTALLED_SERVICES}Service ${DESIRED_SERVICE}\nURL:${DESIRED_SERVICE}.${TOP_DOMAIN}\nUser: ${new_val_user}\nPassword: ${new_val}\n\n"
 }
 
 install_teamspeak () {
@@ -278,6 +278,9 @@ install_Gitlab-AWS-S3-Backup () {
 
   ENV_VAR="{AWS_SECRET_ACCESS_KEY}"
   edit_env_file "Please provide your secret access key: "
+
+  ENV_VAR="{AWS_UPLOAD_REMOTE_DIR}"
+  edit_env_file "Please provide aws upload directory: "
 
   mv ./gitlab/docker-compose-s3.yaml ./gitlab/docker-compose.yaml
 }

@@ -1,33 +1,9 @@
 ## SHOUTOUT TO <a href=https://github.com/stefanDeveloper>stefanDeveloper</a>
-
-### for an automatic installation
-
-```sh
-git clone https://github.com/LarsRoman/dodger.git
-```
-```sh
-chmod +x ./start.sh
-```
-```sh
-./start.sh
-```
-
-<h1 align="center">
-  <br />
-  Dodger
-</h1>
-<h4 align="center">Be sure to :star: my configuration repo so you can keep up to date on any daily progress!</h4>
-<div align="center">
-  <h4>
-    <a href="https://github.com/stefanDeveloper/dodger"><img src="https://img.shields.io/github/stars/stefanDeveloper/dodger.svg?style=plasticr"/></a>
-    <a href="https://github.com/stefanDeveloper/dodger/commits/master"><img src="https://img.shields.io/github/last-commit/stefanDeveloper/dodger.svg?style=plasticr"/></a>
-    <a href="https://github.com/stefanDeveloper/dodger/commits/master"><img src="https://img.shields.io/github/commit-activity/y/stefanDeveloper/dodger.svg?style=plasticr"/></a>
-  </h4>
-</div>
+For a manual setup read [ME](./docu/STEFAN.md)
 
 ## Overview
 
-This repository provides a Docker stack to easily set up your server. This includes Traefik, Portainer, Nextcloud, Homer, Openvpn, Gitlab, Wordpress, Resilio, and Seafile.
+This repository provides a Docker stack to easily set up your server with a simple start script
 
 ## Table Of Contents
 
@@ -40,22 +16,17 @@ This repository provides a Docker stack to easily set up your server. This inclu
 * [OpenVPN](./openvpn/README.md) is self-explaining
 * [Resilio](./resilio/README.md) allows you to sync your data with others, helpful to share backups
 * [Seafile](./seafile/README.md) another cloud (not used by me anymore)
+* [Matrix](./matrix/README.md) a chat-tool similar to slack, but fully open source
+* [Teamspeak](./teamspeak/README.md) a voice over IP service
 
-## Usage
+## Table of Shame
 
-Just clone this repository and follow each guideline inside the corresponding application folder:
+This table includes all services which are not working properly
 
-```sh
-git clone https://github.com/stefanDeveloper/dodger.git
-```
-
-In each of these folders you will find a `docker-compose.yml`, a `.env` file, as well as a `README.md` that describes some basics about this application.
-
-In case you want to run applications individually, please make sure your Docker environment has a network called `proxy`. If this is not the case, please run:
-
-```sh
-docker network create proxy
-```
+* [Homer](./homer/README.md)
+* [Resilio](./resilio/README.md)
+* [Seafile](./seafile/README.md)
+* [Matrix](./matrix/README.md)
 
 ## Prerequisite
 
@@ -63,8 +34,24 @@ Before running one of the applications, it is advisable to follow the [Prerequis
 
 ## Getting Started
 
-tbc. Ansible configuration
+```sh
+git clone https://github.com/LarsRoman/dodger.git
+```
+```sh
+cd dodger
+```
+```sh
+chmod +x ./start.sh
+```
+```sh
+./start.sh
+```
 
-## Contribution
+## Troubleshooting
 
-If you face troubles starting one of these `docker-compose` files, do not hestitate to create issues or pull request.
+1) Be aware that the docker container may take up to 5minutes to run properly with the reverse proxy
+2) Try to access in an incognito browser window
+3) Restart the container like `docker restart portainer`
+4) Create an issue or push request if you find and/or fixed something
+
+In case the S3 Backup of Gitlab is not working, read the gitlab documentation under Troubleshooting for a manual fix
