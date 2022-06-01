@@ -150,7 +150,7 @@ install_traefik () {
   edit_env_file_domain "Please provide the desired main domain. The service will run under traefik.YOUR_INPUT: "
 
   ENV_VAR="{DASHBOARD_USER}"
-  echo "edit_yaml_file provide a username and password for the traefik panel. "
+  edit_yaml_file"Please provide a username and password for the traefik panel. "
   edit_env_file "Username: "
 
   ENV_VAR="{DASHBOARD_PASSWORD}"
@@ -158,7 +158,7 @@ install_traefik () {
   DASHBOARD_PASS=$(openssl passwd -crypt "${new_val}")
   sed -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/docker-compose.yaml"
 
-  container_up
+  install_default
 }
 
 install_teamspeak () {
