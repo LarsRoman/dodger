@@ -5,6 +5,7 @@ services:
     container_name: homer
     volumes:
       - ./data:/www/assets
+      - /etc/traefik/userfile:/userfile:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homer.rule=Host(`${DOMAIN}`)"
@@ -12,7 +13,7 @@ services:
       - "traefik.http.routers.homer.tls.certresolver=mytlschallenge"
       - "traefik.http.services.homer.loadbalancer.server.port=8080"
       - "traefik.http.routers.homer.middlewares=homer-auth"
-      - "traefik.http.middlewares.dashboardauth.basicauth.usersfile=/etc/traefik/userfile"
+      - "traefik.http.middlewares.dashboardauth.basicauth.usersfile=/userfile"
     environment:
       - UID=1000
       - GID=1000
