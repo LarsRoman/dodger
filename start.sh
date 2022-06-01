@@ -91,6 +91,11 @@ edit_env_file () {
     sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.env"
 }
 
+edit_yaml_file () {
+    read -p  "$1 " new_val
+    sed -i "s/$ENV_VAR/$new_val/" "./${DESIRED_SERVICE}/.docker-compose.yaml"
+}
+
 edit_env_file_domain () {
   ENV_VAR="{DOMAIN}"
   read -p  " " new_val
@@ -136,8 +141,8 @@ install_traefik () {
   echo "Creating proxy network"
   docker network create proxy
 
-  read -p  "Enter your E-Mail address for the certificates resolvers: " email
-  sed -i "s/{YOUR_EMAIL}/$email/" "./traefik/docker-compose.yaml"
+  ENV_VAR="{YOUR_EMAIL}"
+  edit_yaml_file "Enter your E-Mail address for the certificates resolvers: "
 
   echo "Providing rights to certificates resolvers"
   sudo chmod 600 -R ./traefik/letsencrypt
@@ -145,20 +150,20 @@ install_traefik () {
   edit_env_file_domain "Please provide the desired main domain. The service will run under traefik.YOUR_INPUT: "
 
   ENV_VAR="{DASHBOARD_USER}"
-  echo "Please provide a username and password for the traefik panel. "
+  echo "edit_yaml_file provide a username and password for the traefik panel. "
   edit_env_file "Username: "
 
   ENV_VAR="{DASHBOARD_PASSWORD}"
   read -p  "Password: " new_val
   DASHBOARD_PASS=$(openssl passwd -crypt "${new_val}")
-  sed -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/.env"
+  sed -i "s/$ENV_VAR/$DASHBOARD_PASS/" "./${DESIRED_SERVICE}/docker-compose.yaml"
 
   container_up
 }
 
 install_teamspeak () {
   ENV_VAR="{TS3SERVER_DB_PASS}"
-  edit_env_file "Please provide a secure database password: "
+  edit_yaml_file "Please provide a secure database password: "
 
   container_up
 }
