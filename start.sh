@@ -36,7 +36,7 @@ entry () {
   apt-get install docker
   apt-get install docker-compose-plugin
   apt-get install sudo
-  apt-get install htpasswd
+  apt-get install apache2-utils
   apt-get update
   apt-get upgrade -y
 
