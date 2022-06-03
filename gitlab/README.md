@@ -47,6 +47,23 @@ chmod +x gitlab-runner-register.sh
 ./gitlab-runner-register.sh
 ```
 
+### Gitlab requires Password even though ssh keypair is provided
+
+Follow the instructions on [gitlab](https://docs.gitlab.com/ee/user/ssh.html) 
+
+If you have problems with your ssh keys (you are forced to type in Username and Password everytime) although you followed the instructions on gitlab, try to add the Port to your `config` (inside ~/.ssh/config) like shown:
+
+```
+# Private GitLab instance
+Host git.{DOMAIN}
+  User {YOUR_USERNAME__OR__MAIL_ADDRESS}
+  Hostname git.{DOMAIN}
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/gitlab_private
+  AddKeysToAgent yes
+  Port 30022
+```
+
 ### AWS S3 Troubleshooting
 
 If the Backups are not automatically deployed to your AWS S3, you need to manually add this to your `gitlab.rb` file like following
